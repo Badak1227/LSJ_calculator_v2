@@ -251,43 +251,33 @@ void calc(queue* exp) {
 				if (isEmptyQueue(exp)) break;
 				cur = deQueue(exp);
 
-				if (cur == 'o') {
+				if (cur == '1') {
 					if (isEmptyQueue(exp)) break;
 					cur = deQueue(exp);
 
-					if (cur == 'g') {
+					if (cur == '0') {
 						if (isEmptyQueue(exp)) break;
 						cur = deQueue(exp);
 
-						if (cur == '1') {
-							if (isEmptyQueue(exp)) break;
-							cur = deQueue(exp);
-
-							if (cur == '0') {
-								if (isEmptyQueue(exp)) break;
-								cur = deQueue(exp);
-
-								if (cur == '(') {
+						if (cur == '(') {
 									
-									push('1', &operator);
-									push('(', &operator);
+							push('1', &operator);
+							push('(', &operator);
 
-									errorCode = 0;
-								}
-							}
+							errorCode = 0;
 						}
-						else if (cur == '2') {
-							if (isEmptyQueue(exp)) break;
-							cur = deQueue(exp);
+					}
+				}
+				else if (cur == '2') {
+					if (isEmptyQueue(exp)) break;
+					cur = deQueue(exp);
 
-							if (cur == '(') {
+					if (cur == '(') {
 								
-								push('2', &operator);
-								push('(', &operator);
+						push('2', &operator);
+						push('(', &operator);
 
-								errorCode = 0;
-							}
-						}
+						errorCode = 0;
 					}
 				}
 			}
@@ -338,7 +328,7 @@ int input() {
 			continue;
 		}
 		//괄호, 숫자, 연산자 외 입력 검사
-		if (('0' <= cur && cur <= '9') || cur == '(' || cur == ')' || cur == '+' || cur == '-' || cur == '*' || cur == '/' || cur == '%' || cur == '^' || cur == '!' || cur == '~' || cur == '.' || cur == 'l' || cur == 'o' || cur == 'g') {
+		if (('0' <= cur && cur <= '9') || cur == '(' || cur == ')' || cur == '+' || cur == '-' || cur == '*' || cur == '/' || cur == '%' || cur == '^' || cur == '.') {
 
 			//괄호쌍 검사
 			if (cur == '(') {
@@ -359,9 +349,24 @@ int input() {
 			}
 
 			enQueue(cur, &exp);
+
 			cur = getc(stdin);
 		}
 		else {
+
+			if (cur == 'l') {
+				cur = getc(stdin);
+				if (cur == 'o') {
+					cur = getc(stdin);
+					if (cur == 'g') {
+						enQueue('l', &exp);
+
+						cur = getc(stdin);
+						continue;
+					}
+				}
+			}
+
 			printf("ERROR: Not An Operand or Operator\n");
 
 			while (getc(stdin) != '\n');
