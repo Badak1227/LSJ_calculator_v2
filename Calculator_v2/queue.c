@@ -13,11 +13,13 @@ typedef struct queue {
 }queue;
 
 queue newQueue() {
+	queue res;
 	queue* tmp = (queue*)malloc(sizeof(queue));
+
 	tmp->front = NULL;
 	tmp->rear = NULL;
+	res = *tmp;
 
-	queue res = *tmp;
 	free(tmp);
 	return res;
 }

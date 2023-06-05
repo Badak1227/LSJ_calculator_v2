@@ -12,16 +12,19 @@ typedef struct stack {
 }stack;
 
 stack newStack() {
+	stack res;
 	stack* tmp = (stack*)malloc(sizeof(stack));
-	tmp->end = NULL;
 
-	stack res = *tmp;
+	tmp->end = NULL;
+	res = *tmp;
+
 	free(tmp);
 	return res;
 }
 
 sNode* get_sNode() {
 	sNode* tmp = (sNode*)malloc(sizeof(sNode));
+
 	tmp->data = 0;
 	tmp->next = NULL;
 	return tmp;
@@ -29,6 +32,7 @@ sNode* get_sNode() {
 
 void push(double data, stack* head) {
 	sNode* tmp = get_sNode();
+
 	tmp->data = data;
 	tmp->next = head->end;
 	head->end = tmp;
@@ -37,6 +41,7 @@ void push(double data, stack* head) {
 double pop(stack* head) {
 	sNode* tmp = head->end;
 	double res = tmp->data;
+
 	head->end = head->end->next;
 	free(tmp);
 

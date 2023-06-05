@@ -5,6 +5,7 @@
 
 int calculate(stack* operand, stack* operator, int n) {
 	int error = 0;
+	double num, num2, num1;
 
 	while (!isEmptyStack(operator)) {
 
@@ -56,10 +57,10 @@ int calculate(stack* operand, stack* operator, int n) {
 		if (top(operator) == '1') {
 			pop(operator);
 
-			int num = pop(operand);
+			num = pop(operand);
 
 			if (num < 1) {
-				printf("ERROR: log10(n), n Less Than 1");
+				printf("ERROR: log10(n) - n Less Than 1\n");
 				error = 2;
 			}
 			push(log10(num), operand);
@@ -67,9 +68,9 @@ int calculate(stack* operand, stack* operator, int n) {
 		else if (top(operator) == '2') {
 			pop(operator);
 
-			int num = pop(operand);
+			num = pop(operand);
 			if (num < 1) {
-				printf("ERROR: log2(n), n Less Than 1");
+				printf("ERROR: log2(n) - n Less Than 1\n");
 				error = 2;
 			}
 			push(log2(num), operand);
@@ -84,19 +85,17 @@ void calc(queue* exp) {
 
 	stack operator = newStack(); // 연산자 스택
 
+	double res = 0;
+
 	double num = 0;
 
 	double point = 0; //소수점 체크
 
 	int preNumCheck = 0; // 이전에 숫자가 왔는지 체크
 
-	int minusCheck = 0; // -연산자가 연속으로 오는지 체크
-
-	int plusCheck = 0; // +연산자가 연속으로 오는지 체크
-
 	int closeCheck = 0; // ')'로 끝났는지 체크
 
-	int errorCode = 0; // 0: 에러 없음, 1: 잘못된 수식 에러, 2: / 0 or % 0 에러
+	int errorCode = 0; // 0: 에러 없음, 1: 잘못된 수식 형태 에러, 2: 계산과정 에러
 
 	while (!isEmptyQueue(exp) && errorCode == 0) {
 		char cur = deQueue(exp);
@@ -111,9 +110,11 @@ void calc(queue* exp) {
 		}
 		else if (cur == '+') {
 			if (preNumCheck == 0) {
-				if (plusCheck == 1) {
-					errorCode = 1;
-					break;
+				if (!isEmptyStack(&operator)) {
+					if (top(&operator) != '(') {
+						errorCode = 1;
+						break;
+					}
 				}
 
 				push(1, &operand);
@@ -137,14 +138,14 @@ void calc(queue* exp) {
 			}
 
 			point = 0;
-			plusCheck = 1;
-			minusCheck = 0;
 		}
 		else if (cur == '-') {
 			if (preNumCheck == 0) {
-				if (minusCheck == 1) {
-					errorCode = 1;
-					break;
+				if (!isEmptyStack(&operator)) {
+					if (top(&operator) != '(') {
+						errorCode = 1;
+						break;
+					}
 				}
 
 				push(-1, &operand);
@@ -168,8 +169,6 @@ void calc(queue* exp) {
 			}
 
 			point = 0;
-			plusCheck = 0;
-			minusCheck = 1;
 		}
 		else if ('0' <= cur && cur <= '9') {
 			if (closeCheck == 1) {
@@ -186,8 +185,6 @@ void calc(queue* exp) {
 			}
 
 			preNumCheck = 1;
-			minusCheck = 0;
-			plusCheck = 0;
 			closeCheck = 0;
 		}
 		else {
@@ -300,8 +297,6 @@ void calc(queue* exp) {
 			}
 
 			point = 0;
-			plusCheck = 0;
-			minusCheck = 0;
 		}
 	}
 	// 마지막이 숫자로 끝나지 않았을 시 체크, ')'로 끝나도 숫자로 끝나는 것으로 취급
@@ -310,21 +305,18 @@ void calc(queue* exp) {
 	}
 
 	//수식 형태 오류 체크
-	if (errorCode == 1) {
-		printf("ERROR: Invalid Experiment\n");
-	}
-	else if (errorCode == 2) {
-
-	}
-	else {
+	if (errorCode == 0) {
 		push(num, &operand);
 
 		errorCode = calculate(&operand, &operator, 0);
 
 		if (errorCode == 0) {
-			double res = top(&operand);
-			printf("result: %.2lf\n", round(res*100)/100);
+			res = top(&operand);
+			printf("result: %.2lf\n", round(res * 100) / 100);
 		}
+	}
+	else if (errorCode == 1) {
+		printf("ERROR: Invalid Experiment\n");
 	}
 
 	freeStack(&operand);
