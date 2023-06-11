@@ -60,7 +60,7 @@ int calculate(stack* operand, stack* operator, int n) {
 			num = pop(operand);
 
 			if (num < 1) {
-				printf("ERROR: log10(n) - n Less Than 1\n");
+				printf("ERROR: log10(n), n Less Than 1\n");
 				error = 2;
 			}
 			push(log10(num), operand);
