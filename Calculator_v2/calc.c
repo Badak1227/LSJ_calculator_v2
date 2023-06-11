@@ -70,7 +70,7 @@ int calculate(stack* operand, stack* operator, int n) {
 
 			num = pop(operand);
 			if (num < 1) {
-				printf("ERROR: log2(n) - n Less Than 1\n");
+				printf("ERROR: log2(n), n Less Than 1\n");
 				error = 2;
 			}
 			push(log2(num), operand);
@@ -133,11 +133,11 @@ void calc(queue* exp) {
 
 
 				push(cur, &operator);
+
+				point = 0;
 				preNumCheck = 0;
 				closeCheck = 0;
 			}
-
-			point = 0;
 		}
 		else if (cur == '-') {
 			if (preNumCheck == 0) {
@@ -163,12 +163,11 @@ void calc(queue* exp) {
 				}
 
 				push(cur, &operator);
-				preNumCheck = 0;
-				
-				closeCheck = 0;
-			}
 
-			point = 0;
+				point = 0;
+				preNumCheck = 0;
+				closeCheck = 0;
+			}			
 		}
 		else if ('0' <= cur && cur <= '9') {
 			if (closeCheck == 1) {
@@ -294,7 +293,7 @@ void calc(queue* exp) {
 		errorCode = 1;
 	}
 
-	//수식 형태 오류 체크
+	// 오류 체크
 	if (errorCode == 0) {
 		push(num, &operand);
 
@@ -369,7 +368,9 @@ int input() {
 
 			printf("ERROR: Not An Operand or Operator\n");
 
-			while (getc(stdin) != '\n');
+			if (cur != '\n') {
+				while (getc(stdin) != '\n');
+			}
 
 			freeQueue(&exp);
 			return 1;
